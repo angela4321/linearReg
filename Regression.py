@@ -1,21 +1,27 @@
 class Regression:
     theta = []
     data = None
+    test = None
+    validation = None
     a = 1 #learning rate
     epochs = None
 
-    def __init__(self,a,data, epochs):
+    def __init__(self,a,data, test, validation, epochs):
         self.a=a
         self.data = data
+        self.test = test
+        self.validation = validation
         self.epochs = epochs
         for i in range(len(data[0])):
-            self.theta.append(0)
+            self.theta.append(0)    #set the default theta as 0
 
     def learn(self):
         for i in range(self.epochs):
            self.update()
-           print(str(self.cost()))
+           print("Training: "+str(self.cost(self.data)))
+           print("Test: " + str(self.cost(self.test))+"\n")
 
+    #performs gradient descent
     def update(self):
         temp = []
         for i in range(len(self.theta)-1):
@@ -24,7 +30,7 @@ class Regression:
                 p = self.predict(j)
                 sum+=(p-j[len(j)-1])*j[i]
 
-            nTheta = self.theta[i]-sum/len(self.data)*self.a
+            nTheta = self.theta[i]-sum/len(self.data)*self.a    #updates theta values
             temp.append(nTheta)
 
         #update constant
@@ -35,7 +41,7 @@ class Regression:
         nTheta = self.theta[len(self.theta)-1] - sum / len(self.data) * self.a
         temp.append(nTheta)
 
-        self.theta = temp
+        self.theta = temp   #set theta to new updated values
 
 
     def predict(self,row):
@@ -51,9 +57,13 @@ class Regression:
             s+=str(i)+" "
         print(s)
 
-    def cost(self):
+    def validate(self):
+        return self.cost(self.validation)
+
+    #calculates average square difference
+    def cost(self, data):
         sum = 0
-        for i in self.data:
+        for i in data:
             temp = self.predict(i)-i[len(i)-1]
             sum+=temp*temp
-        return sum
+        return sum/len(data)

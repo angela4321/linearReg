@@ -23,7 +23,6 @@ class GenerateFile:
         for i in range(self.numVar+1):
             self.variables.append( random.randrange(self.maxVar-self.minVar)+self.minVar)
 
-
     def makeData(self):
         constant = self.variables[len(self.variables)-1]
         for i in range(self.m):
@@ -33,7 +32,7 @@ class GenerateFile:
                 temp = random.randrange(self.maxX-self.minX)+self.minX
                 sum+=temp*self.variables[j]
                 arr.append(temp)
-            sum+=random.randrange(self.noise)-self.noise/2
+            sum+=random.randrange(self.noise)-self.noise/2  #makes sure the data set isn't perfectly linear
             sum+=constant
             arr.append(sum)
             self.data.append(arr)
