@@ -1,3 +1,4 @@
+import numpy as np
 class Regression:
     theta = []
     data = None
@@ -5,21 +6,27 @@ class Regression:
     validation = None
     a = 1 #learning rate
     epochs = None
-
-    def __init__(self,a,data, test, validation, epochs):
+    train_history = None
+    validation_history = None
+    def __init__(self,a,data, validation, test, epochs):
         self.a=a
         self.data = data
         self.test = test
         self.validation = validation
         self.epochs = epochs
+        self.train_history = np.zeros(epochs)
+        self.validation_history = np.zeros(epochs)
         for i in range(len(data[0])):
             self.theta.append(0)    #set the default theta as 0
 
     def learn(self):
         for i in range(self.epochs):
            self.update()
-           print("Training: "+str(self.cost(self.data)))
-           print("Test: " + str(self.cost(self.test))+"\n")
+           train_cost = self.cost(self.data)
+           val_cost = self.cost(self.validation)
+           self.train_history[i] = train_cost
+           self.validation_history[i] = val_cost
+
 
     #performs gradient descent
     def update(self):
@@ -52,13 +59,13 @@ class Regression:
         return sum
 
     def printTheta(self):
-        s = ""
+        s = "Predicted values: "
         for i in self.theta:
             s+=str(i)+" "
         print(s)
 
-    def validate(self):
-        return self.cost(self.validation)
+    def findTestCost(self):
+        return self.cost(self.test)
 
     #calculates average square difference
     def cost(self, data):
